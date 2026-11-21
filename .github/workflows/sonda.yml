@@ -1,0 +1,35 @@
+name: sonda
+# Cada 10 minuts arrenca una execució que comprova cada minut durant ~9 minuts (GitHub pot endarrerir els cron).
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write   # desar resultats pendents (només durant una caiguda) i l'estat diari
+  id-token: write   # token OIDC per identificar-se davant de l'SJD-MIP (i d'Azure, per als avisos)
+concurrency:
+  group: sonda
+  cancel-in-progress: false
+jobs:
+  sonda:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Comprovar l'SJD-MIP
+        env:
+          TARGETS: '[{"env":"prova","base":"https://hsjd-mip.appliant.eu"},{"env":"formacio","base":"https://hsjd-mip.appliant.eu:8443"}]'
+          MAIN_ENV: prova
+          AZ_TENANT: ${{ vars.AZ_TENANT }}
+          AZ_CLIENT: ${{ vars.AZ_CLIENT }}
+          AZ_SUB: ${{ vars.AZ_SUB }}
+          AZ_RG_CAIGUDA: ${{ vars.AZ_RG_CAIGUDA }}
+          AZ_RG_RECUPERAT: ${{ vars.AZ_RG_RECUPERAT }}
+        run: python3 sonda.py
+      - name: Desar l'estat (si ha canviat)
+        if: always()
+        run: |
+          git config user.name 'sonda'; git config user.email 'sonda@users.noreply.github.com'
+          git add -A estat
+          git diff --cached --quiet && exit 0
+          git commit -qm "estat $(date -u +%F\ %H:%M)" && (git push -q || (git pull -q --rebase && git push -q))
