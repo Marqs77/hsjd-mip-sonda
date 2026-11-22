@@ -7,4 +7,4 @@ Comprova des de fora, cada minut, que la plataforma de prova de l'Hospital Sant 
 - No fa servir secrets: s'identifica amb el token OIDC de GitHub Actions d'aquest repositori.
 - No desa dades de l'aplicació: només hores, temps de resposta i si ha anat bé.
 - Si la plataforma no respon, els resultats es guarden a `estat/` i s'envien quan torna.
-- Opcional: avís per correu i SMS a través d'Azure (variables `AZ_*` del repositori).
+- Si la plataforma cau 2 minuts seguits o es recupera, avisa per correu i SMS a través d'Azure (credencial federada, sense secrets).

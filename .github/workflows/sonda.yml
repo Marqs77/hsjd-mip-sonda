@@ -20,11 +20,12 @@ jobs:
         env:
           TARGETS: '[{"env":"prova","base":"https://hsjd-mip.appliant.eu"},{"env":"formacio","base":"https://hsjd-mip.appliant.eu:8443"}]'
           MAIN_ENV: prova
-          AZ_TENANT: ${{ vars.AZ_TENANT }}
-          AZ_CLIENT: ${{ vars.AZ_CLIENT }}
-          AZ_SUB: ${{ vars.AZ_SUB }}
-          AZ_RG_CAIGUDA: ${{ vars.AZ_RG_CAIGUDA }}
-          AZ_RG_RECUPERAT: ${{ vars.AZ_RG_RECUPERAT }}
+          # avís per Azure (correu + SMS): identificadors, no secrets; l'accés és per credencial federada d'aquest repo
+          AZ_TENANT: 91f89255-7c5a-470c-8cda-ebff9aed08f6
+          AZ_CLIENT: 824220b0-74a1-4fe3-bbb7-584483d42f23
+          AZ_SUB: db5d0bfe-0216-4fee-b078-1e9aabae34f8
+          AZ_RG_CAIGUDA: rg-hsjd-mip-avis-caiguda
+          AZ_RG_RECUPERAT: rg-hsjd-mip-avis-recuperat
         run: python3 sonda.py
       - name: Desar l'estat (si ha canviat)
         if: always()
