@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
+  push:              # en canviar la sonda (els commits d'estat de la mateixa sonda no la disparen)
+    branches: [main]
+    paths: ['sonda.py', '.github/workflows/sonda.yml']
 permissions:
   contents: write   # desar resultats pendents (només durant una caiguda) i l'estat diari
   id-token: write   # token OIDC per identificar-se davant de l'SJD-MIP (i d'Azure, per als avisos)
